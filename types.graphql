@@ -1,0 +1,110 @@
+type ServicePage @model {
+  id: ID! @isUnique
+  title: String!
+  slug: String!
+  topic: Topic! @relation(name: "ServicePageTopic")
+  steps: Json!
+  dynamicContent: Json!
+  additionalContent: String!
+  image: Image @relation(name: "ServicePageImage")
+  contacts: [Contact!]! @relation(name: "ServicePageContacts")
+}
+
+type Topic @model {
+  id: ID! @isUnique
+  slug: String!
+  text: String!
+  theme: Theme @relation(name: "TopicTheme")
+  description: String! @migrationValue(value: "blarg")
+  callToAction: String! @migrationValue(value: "blarg")
+
+  servicePages: [ServicePage!]! @relation(name: "ServicePageTopic")
+}
+
+type Theme @model {
+  id: ID! @isUnique
+  slug: String!
+  text: String!
+  description: String! @migrationValue(value: "blarg")
+
+  topics: [Topic!]! @relation(name: "TopicTheme")
+}
+
+type Image @model {
+  id: ID! @isUnique
+  filename: String!
+  title: String!
+
+  servicePages: [ServicePage!]! @relation(name: "ServicePageImage")
+  departments: [Department!]! @relation(name: "DepartmentImage")
+}
+
+type Contact @model {
+  id: ID! @isUnique
+  name: String!
+  email: String!
+  phone: Json!
+    @migrationValue(
+      value: "{\"default\": \"512-974-2000\", \"n11\": 311, \"tty\": \"512-972-9848\"}"
+    )
+  hours: [ContactDayAndDuration!]! @relation(name: "ContactHours")
+  location: Location @relation(name: "ContactLocation")
+
+  servicePages: [ServicePage!]! @relation(name: "ServicePageContacts")
+  departments: [Department!]! @relation(name: "DepartmentContacts")
+}
+
+type ContactDayAndDuration @model {
+  id: ID! @isUnique
+  dayOfWeek: DayAndDurationDayOfWeek
+  startTime: DateTime!
+  endTime: DateTime!
+
+  contacts: [Contact!]! @relation(name: "ContactHours")
+}
+
+enum DayAndDurationDayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+type Location @model {
+  id: ID! @isUnique
+  name: String!
+  street: String!
+  city: String!
+  state: LocationState
+  country: LocationCountry
+  zip: String!
+
+  contacts: [Contact!]! @relation(name: "ContactLocation")
+}
+
+enum LocationState {
+  TX
+}
+
+enum LocationCountry {
+  UNITED_STATES
+}
+
+type ThreeOneOne @model {
+  id: ID! @isUnique
+  title: String!
+  url: String!
+}
+
+type Department @model {
+  id: ID! @isUnique
+  slug: String!
+  name: String!
+  mission: String!
+  image: Image @relation(name: "DepartmentImage")
+
+  contacts: [Contact!]! @relation(name: "DepartmentContacts")
+}

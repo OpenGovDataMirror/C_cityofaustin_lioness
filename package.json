@@ -1,0 +1,21 @@
+{
+  "name": "lioness",
+  "version": "1.0.0",
+  "description": "My Graphcool Service",
+  "scripts": {
+    "build": "babel ./data/src -d ./data/out",
+    "populate-db": "yarn build; node data/out/populateData.js",
+    "populate-db-debug":
+      "yarn build; node --inspect-brk data/out/populateData.js",
+    "clear-and-redeploy":
+      "./data/scripts/resetData.sh; graphcool local up; graphcool deploy"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "fs": "^0.0.1-security",
+    "graphql-request": "^1.6.0",
+    "js-yaml": "^3.12.0"
+  }
+}
